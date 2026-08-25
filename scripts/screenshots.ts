@@ -88,7 +88,21 @@ async function main() {
   await shot("error-state");
   await page.unroute("**/api/health");
 
-  // 7. The data-model diagram, captured from a standalone page so the README
+  // 7. Dark mode, driven by the OS preference rather than the toggle so the
+  //    capture does not depend on click timing.
+  const darkContext = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 2,
+    colorScheme: "dark",
+  });
+  const darkPage = await darkContext.newPage();
+  await darkPage.goto(BASE + "/apps/n8n", { waitUntil: "domcontentloaded" });
+  await settle(darkPage);
+  await darkPage.screenshot({ path: resolve(OUT, "dark-mode.png") });
+  await darkContext.close();
+  console.log("  captured dark-mode.png");
+
+  // 8. The data-model diagram, captured from a standalone page so the README
   //    has a PNG for viewers that do not render Mermaid.
   await page.goto("file://" + resolve(process.cwd(), "scripts/data-model.html"));
   await settle(page);

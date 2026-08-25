@@ -142,6 +142,14 @@ for it — it arrives by twelve distinct routes.
 
 ![Maintainer](docs/screenshots/maintainer.png)
 
+### Light and dark, with an explicit override
+
+The theme follows the operating system by default and can be pinned either way
+from the header. The choice is applied before first paint, so there is no flash
+of the wrong palette on load.
+
+![Dark mode](docs/screenshots/dark-mode.png)
+
 ### Graceful degradation when the database is unreachable
 
 ![Database unreachable](docs/screenshots/error-state.png)

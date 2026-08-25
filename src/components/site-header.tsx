@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { SearchBox } from "./search-box";
+import { ThemeToggle } from "./theme-toggle";
 
 const NAV = [
   { href: "/", label: "Applications" },
@@ -34,8 +35,11 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto w-full sm:w-auto sm:min-w-72 sm:flex-1 sm:max-w-md">
-          <SearchBox />
+        <div className="ml-auto flex w-full items-center gap-2 sm:w-auto sm:min-w-72 sm:flex-1 sm:max-w-md">
+          <div className="min-w-0 flex-1">
+            <SearchBox />
+          </div>
+          <ThemeToggle />
         </div>
       </div>
     </header>

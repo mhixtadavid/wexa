@@ -38,8 +38,18 @@
   --ok-soft: #ecfdf3;
 }
 
+/**
+ * Dark palette, applied in two situations:
+ *
+ *   1. the viewer's OS prefers dark and they have not chosen "light" here
+ *   2. the viewer has explicitly chosen "dark" here
+ *
+ * The block is duplicated rather than shared because a media query and an
+ * attribute selector cannot be combined into one rule. The two lists must stay
+ * in sync — change one, change the other.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #0b0b0f;
     --surface: #131318;
     --surface-sunken: #1b1b22;
@@ -67,6 +77,51 @@
     --ok: #75e0a7;
     --ok-soft: #0a2419;
   }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b0b0f;
+  --surface: #131318;
+  --surface-sunken: #1b1b22;
+  --border: #26262f;
+  --border-strong: #35353f;
+
+  --text: #f2f2f5;
+  --text-muted: #a0a0b0;
+  --text-subtle: #70707f;
+
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: #1e1b3a;
+  --accent-fg: #0b0b0f;
+
+  --critical: #fda29b;
+  --critical-soft: #2b1210;
+  --high: #fec84b;
+  --high-soft: #2a1c08;
+  --moderate: #fde272;
+  --moderate-soft: #26200a;
+  --low: #98a2b3;
+  --low-soft: #1c1f26;
+
+  --ok: #75e0a7;
+  --ok-soft: #0a2419;
+}
+
+/* The browser's own UI (form controls, scrollbars) should match. */
+:root {
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 @theme inline {

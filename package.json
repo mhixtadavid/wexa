@@ -14,7 +14,8 @@
     "seed:load": "tsx scripts/seed/load.ts",
     "seed": "npm run seed:fetch && npm run seed:load",
     "db:smoke": "tsx scripts/smoke.ts",
-    "screenshots": "tsx scripts/screenshots.ts"
+    "screenshots": "tsx scripts/screenshots.ts",
+    "verify:theme": "tsx scripts/verify-theme.ts"
   },
   "dependencies": {
     "neo4j-driver": "^6.2.0",
