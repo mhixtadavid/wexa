@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  Source for docs/screenshots/data-model.png.
+
+  Hand-authored rather than generated, because the README's Mermaid block only
+  renders on GitHub — this PNG is the fallback for every other viewer. Captured
+  by scripts/screenshots.ts.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --border: #d0d0d9;
+        --text: #16161d;
+        --muted: #5c5c6b;
+        --accent: #4f46e5;
+        --accent-soft: #eef2ff;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 32px;
+        background: var(--bg);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      .node-label { font-size: 15px; font-weight: 600; fill: var(--text); }
+      .node-props { font-size: 11.5px; fill: var(--muted); font-family: ui-monospace, "SF Mono", monospace; }
+      .edge-label { font-size: 11.5px; font-weight: 600; fill: var(--accent); }
+      .edge-props { font-size: 10.5px; fill: var(--muted); font-family: ui-monospace, "SF Mono", monospace; }
+      .note { font-size: 11.5px; fill: var(--muted); font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <svg id="diagram" width="940" height="540" viewBox="0 0 940 540" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#4f46e5" />
+        </marker>
+        <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a8a99" />
+        </marker>
+      </defs>
+
+      <!-- ============ edges (drawn first, behind the boxes) ============ -->
+
+      <!-- Maintainer -> Package -->
+      <line x1="230" y1="62" x2="392" y2="62" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow)" />
+      <text class="edge-label" x="311" y="52" text-anchor="middle">MAINTAINS</text>
+
+      <!-- Package -> Version -->
+      <line x1="500" y1="100" x2="500" y2="222" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow)" />
+      <text class="edge-label" x="510" y="152" text-anchor="start">HAS_VERSION</text>
+
+      <!-- Application -> Version -->
+      <line x1="230" y1="260" x2="392" y2="260" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow)" />
+      <text class="edge-label" x="311" y="250" text-anchor="middle">DEPENDS_ON</text>
+      <text class="edge-props" x="311" y="276" text-anchor="middle">range, scope</text>
+
+      <!-- Version -> Version (self loop, the transitive spine) -->
+      <path d="M 560 238 C 620 200, 660 258, 608 280"
+            fill="none" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow)" />
+      <text class="edge-label" x="648" y="222" text-anchor="middle">REQUIRES</text>
+      <text class="edge-props" x="648" y="238" text-anchor="middle">range</text>
+
+      <!-- Version -> License -->
+      <line x1="500" y1="298" x2="500" y2="412" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow)" />
+      <text class="edge-label" x="510" y="360" text-anchor="start">LICENSED_UNDER</text>
+
+      <!-- Advisory -> Version -->
+      <line x1="230" y1="440" x2="392" y2="290" stroke="#4f46e5" stroke-width="1.5" marker-end="url(#arrow)" />
+      <text class="edge-label" x="300" y="380" text-anchor="middle">AFFECTS</text>
+
+      <!-- Application -> Advisory (materialised) -->
+      <line x1="130" y1="298" x2="130" y2="412" stroke="#8a8a99" stroke-width="1.5"
+            stroke-dasharray="5 4" marker-end="url(#arrow-muted)" />
+      <text class="edge-props" x="120" y="348" text-anchor="end">EXPOSED_TO</text>
+      <text class="edge-props" x="120" y="364" text-anchor="end">hops</text>
+
+      <!-- ============ nodes ============ -->
+
+      <!-- Maintainer -->
+      <rect x="40" y="30" width="190" height="64" rx="10" fill="#ffffff" stroke="#d0d0d9" stroke-width="1.5" />
+      <text class="node-label" x="56" y="55">Maintainer</text>
+      <text class="node-props" x="56" y="76">username, email</text>
+
+      <!-- Package -->
+      <rect x="392" y="30" width="216" height="70" rx="10" fill="#ffffff" stroke="#d0d0d9" stroke-width="1.5" />
+      <text class="node-label" x="408" y="55">Package</text>
+      <text class="node-props" x="408" y="76">name, weeklyDownloads</text>
+
+      <!-- Application -->
+      <rect x="40" y="222" width="190" height="76" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" />
+      <text class="node-label" x="56" y="248">Application</text>
+      <text class="node-props" x="56" y="268">slug, name</text>
+      <text class="node-props" x="56" y="285">+ 9 rollup props</text>
+
+      <!-- Version -->
+      <rect x="392" y="222" width="216" height="76" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5" />
+      <text class="node-label" x="408" y="248">Version</text>
+      <text class="node-props" x="408" y="268">id = name@semver</text>
+      <text class="node-props" x="408" y="285">depth, deprecated</text>
+
+      <!-- License -->
+      <rect x="392" y="412" width="216" height="64" rx="10" fill="#ffffff" stroke="#d0d0d9" stroke-width="1.5" />
+      <text class="node-label" x="408" y="437">License</text>
+      <text class="node-props" x="408" y="458">spdxId, category</text>
+
+      <!-- Advisory -->
+      <rect x="40" y="412" width="190" height="64" rx="10" fill="#ffffff" stroke="#d0d0d9" stroke-width="1.5" />
+      <text class="node-label" x="56" y="437">Advisory</text>
+      <text class="node-props" x="56" y="458">ghsaId, severity</text>
+
+      <!-- annotations -->
+      <text class="note" x="628" y="330">the transitive spine —</text>
+      <text class="note" x="628" y="346">dependencies live on the</text>
+      <text class="note" x="628" y="362">release, not the name</text>
+
+      <text class="note" x="40" y="508">Dashed edge is materialised at seed time: reachability precomputed, so the</text>
+      <text class="note" x="40" y="524">advisory query is an index lookup rather than 127 shortest-path traversals.</text>
+    </svg>
+  </body>
+</html>
