@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
+/**
+ * Design tokens.
+ *
+ * The palette is deliberately restrained: one accent, a neutral ramp, and a
+ * four-step severity scale. Severity is the only place saturated colour is
+ * used, so a critical advisory is the most visually urgent thing on any screen
+ * it appears on. Package names and dependency chains are set in mono because
+ * they are identifiers, not prose.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --bg: #fbfbfd;
+  --surface: #ffffff;
+  --surface-sunken: #f4f4f7;
+  --border: #e4e4ea;
+  --border-strong: #d0d0d9;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --text: #16161d;
+  --text-muted: #5c5c6b;
+  --text-subtle: #8a8a99;
+
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: #eef2ff;
+  --accent-fg: #ffffff;
+
+  --critical: #b42318;
+  --critical-soft: #fef3f2;
+  --high: #b54708;
+  --high-soft: #fffaeb;
+  --moderate: #854a0e;
+  --moderate-soft: #fefbe8;
+  --low: #475467;
+  --low-soft: #f2f4f7;
+
+  --ok: #067647;
+  --ok-soft: #ecfdf3;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0b0b0f;
+    --surface: #131318;
+    --surface-sunken: #1b1b22;
+    --border: #26262f;
+    --border-strong: #35353f;
+
+    --text: #f2f2f5;
+    --text-muted: #a0a0b0;
+    --text-subtle: #70707f;
+
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
+    --accent-soft: #1e1b3a;
+    --accent-fg: #0b0b0f;
+
+    --critical: #fda29b;
+    --critical-soft: #2b1210;
+    --high: #fec84b;
+    --high-soft: #2a1c08;
+    --moderate: #fde272;
+    --moderate-soft: #26200a;
+    --low: #98a2b3;
+    --low-soft: #1c1f26;
+
+    --ok: #75e0a7;
+    --ok-soft: #0a2419;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border-subtle: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-high: var(--high);
+  --color-high-soft: var(--high-soft);
+  --color-moderate: var(--moderate);
+  --color-moderate-soft: var(--moderate-soft);
+  --color-low: var(--low);
+  --color-low-soft: var(--low-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures everywhere numbers are compared down a column. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.skeleton::after {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--border) 60%, transparent),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+  content: "";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
 }
