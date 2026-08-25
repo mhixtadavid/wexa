@@ -9,10 +9,12 @@ import {
   SeverityBadge,
   Stat,
 } from "@/components/ui";
+import { DependencyBrowser } from "@/components/dependency-browser";
 import { WhyPanel } from "@/components/why-panel";
 import { compactNumber, fullNumber, maintainerHref, packageHref } from "@/lib/format";
 import {
   getApplication,
+  getApplicationPackages,
   getLicenseExposure,
   getMaintainerExposure,
   getReachableAdvisories,
@@ -38,11 +40,12 @@ export default async function ApplicationPage({ params }: PageProps<"/apps/[slug
 
   // Four independent traversals; running them concurrently means the page waits
   // for the slowest rather than the sum.
-  const [maintainers, solo, advisories, licenses] = await Promise.all([
+  const [maintainers, solo, advisories, licenses, packages] = await Promise.all([
     getMaintainerExposure(slug),
     getSoloMaintainedPackages(slug),
     getReachableAdvisories(slug),
     getLicenseExposure(slug),
+    getApplicationPackages(slug),
   ]);
 
   return (
@@ -159,6 +162,19 @@ export default async function ApplicationPage({ params }: PageProps<"/apps/[slug
             </table>
           </Card>
         )}
+      </section>
+
+      {/* What it actually installs — the entry point for "why is this here?" */}
+      <section className="mb-12">
+        <SectionHeading
+          title="What this application installs"
+          description="Every package delivered by installing it, not just the ones it asked for. Search the whole tree, then open any row to see the chain that pulls it in."
+        />
+        <DependencyBrowser
+          appSlug={slug}
+          initialPackages={packages}
+          totalPackages={app.transitivePackageCount}
+        />
       </section>
 
       {/* Q4 */}

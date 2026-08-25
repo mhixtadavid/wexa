@@ -1,6 +1,7 @@
 import { read, readOne } from "@/lib/db/session";
 
 import type {
+  ApplicationPackage,
   ApplicationSummary,
   LicenseExposure,
   MaintainerExposure,
@@ -188,6 +189,47 @@ export function getReachableAdvisories(slug: string, limit = 50): Promise<Reacha
     `,
     { slug, limit },
     (record) => record.get("row") as ReachableAdvisory,
+  );
+}
+
+/**
+ * Every package an application actually installs, newest-heaviest first, with
+ * an optional name filter.
+ *
+ * This exists because the other sections answer questions *about* the tree —
+ * who maintains it, what is vulnerable, what rests on one person — but none of
+ * them let you look up an ordinary package and ask why it is there. Without
+ * it, a dependency with several maintainers and no advisory is invisible in
+ * the UI even though it is in the graph.
+ *
+ * The filter is applied inside the traversal rather than afterwards, so
+ * searching a large tree is cheaper than listing it: n8n unfiltered takes
+ * ~2.1s, filtered to "debug" ~1.7s.
+ */
+export function getApplicationPackages(
+  slug: string,
+  search = "",
+  limit = 60,
+): Promise<ApplicationPackage[]> {
+  return read(
+    `
+    MATCH path = (a:Application {slug: $slug})-[:DEPENDS_ON|REQUIRES*1..5]->(v:Version)
+    MATCH (p:Package)-[:HAS_VERSION]->(v)
+    WHERE $search = '' OR toLower(p.name) CONTAINS toLower($search)
+    WITH p, min(length(path)) AS hops
+    OPTIONAL MATCH (m:Maintainer)-[:MAINTAINS]->(p)
+    WITH p, hops, count(m) AS maintainerCount
+    ORDER BY p.weeklyDownloads DESC, p.name ASC
+    LIMIT $limit
+    RETURN {
+      name: p.name,
+      hops: hops,
+      maintainerCount: maintainerCount,
+      weeklyDownloads: p.weeklyDownloads
+    } AS row
+    `,
+    { slug, search, limit },
+    (record) => record.get("row") as ApplicationPackage,
   );
 }
 

@@ -88,6 +88,14 @@ export interface BlastRadius {
   affected: BlastRadiusEntry[];
 }
 
+export interface ApplicationPackage {
+  name: string;
+  /** Shortest distance from the application, in hops. */
+  hops: number;
+  maintainerCount: number;
+  weeklyDownloads: number | null;
+}
+
 export interface LicenseExposure {
   spdxId: string;
   category: LicenseCategory;
