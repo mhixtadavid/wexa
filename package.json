@@ -6,21 +6,37 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:check": "tsx scripts/check-connection.ts",
+    "db:schema": "tsx scripts/apply-schema.ts",
+    "typecheck": "tsc --noEmit",
+    "seed:fetch": "tsx scripts/seed/fetch.ts",
+    "seed:load": "tsx scripts/seed/load.ts",
+    "seed": "npm run seed:fetch && npm run seed:load",
+    "db:smoke": "tsx scripts/smoke.ts",
+    "screenshots": "tsx scripts/screenshots.ts"
   },
   "dependencies": {
+    "neo4j-driver": "^6.2.0",
     "next": "16.3.2",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/semver": "^7.8.0",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
+    "p-limit": "^7.3.1",
+    "playwright": "^1.62.1",
+    "semver": "^7.8.5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.12",
     "typescript": "^5"
   }
 }
